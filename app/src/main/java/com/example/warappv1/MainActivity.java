@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.warappv1.fragment.ButtonListFragment;
+import com.example.warappv1.fragment.ItemListFragment;
+import com.example.warappv1.utils.AppConstants;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ButtonListFragment.ButtonClickListener,ItemListFragment.OnItemSelectedListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +35,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onButtonClick(int buttonId) {
+        switch (buttonId){
+            case AppConstants.HORSE_SELECTED:{
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frameForFragment,new ItemListFragment())
+                        .addToBackStack(null)
+                .commit();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onItemSelected(int position, int typeOfResource) {
+
     }
 }

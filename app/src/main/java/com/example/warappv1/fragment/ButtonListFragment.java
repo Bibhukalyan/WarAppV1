@@ -4,23 +4,23 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.warappv1.R;
+import com.example.warappv1.utils.AppConstants;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ButtonListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
+
 public class ButtonListFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private ButtonClickListener mListener;
+    private Button btnShowHorse;
 
     public ButtonListFragment() {
         // Required empty public constructor
@@ -34,18 +34,45 @@ public class ButtonListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_button_list, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        initViews(view);
+        initClickListener();
+
+    }
+
+
+    private void initViews(View view) {
+        btnShowHorse = view.findViewById(R.id.btn_show_horses);
+
+    }
+
+
+    private void initClickListener() {
+        btnShowHorse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonPressed(AppConstants.HORSE_SELECTED);
+            }
+        });
+
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(int buttonId) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onButtonClick(buttonId);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof ButtonClickListener) {
+            mListener = (ButtonClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -58,18 +85,8 @@ public class ButtonListFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
+    public interface ButtonClickListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onButtonClick(int buttonId);
     }
 }
