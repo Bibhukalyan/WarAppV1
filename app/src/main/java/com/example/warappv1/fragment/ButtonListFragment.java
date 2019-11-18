@@ -1,12 +1,12 @@
 package com.example.warappv1.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +14,32 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.warappv1.R;
+import com.example.warappv1.adapter.GunListAdapter;
+import com.example.warappv1.adapter.HorseListAdapter;
+import com.example.warappv1.model.GunModel;
+import com.example.warappv1.model.HorseModel;
 import com.example.warappv1.utils.AppConstants;
 
+import java.util.ArrayList;
 
-public class ButtonListFragment extends Fragment {
 
-    private ButtonClickListener mListener;
-    private Button btnShowHorse;
+public class ButtonListFragment extends BaseFragment {
 
-    public ButtonListFragment() {
+    //private ButtonClickListener mListener;
+    private Button btnShowHorse,btnShowGuns;
+    private RecyclerView rvHorseList,rvGunList;
+    private ArrayList<HorseModel> horseModels;
+    private ArrayList<GunModel> gunModels;
+
+    public ButtonListFragment(ArrayList<HorseModel> horseModels, ArrayList<GunModel> gunModels) {
         // Required empty public constructor
+        this.horseModels = new ArrayList<>();
+        this.gunModels = new ArrayList<>();
+        if (horseModels != null){
+            this.horseModels.addAll(horseModels);
+        }
+        if (gunModels != null)
+            this.gunModels.addAll(gunModels);
     }
 
 
@@ -47,7 +63,11 @@ public class ButtonListFragment extends Fragment {
 
     private void initViews(View view) {
         btnShowHorse = view.findViewById(R.id.btn_show_horses);
+        btnShowGuns = view.findViewById(R.id.btn_show_guns);
+        rvHorseList = view.findViewById(R.id.rv_horse_list);
+        rvGunList = view.findViewById(R.id.rv_gun_list);
 
+        //horseModels = new ArrayList<>();
     }
 
 
@@ -58,35 +78,40 @@ public class ButtonListFragment extends Fragment {
                 onButtonPressed(AppConstants.HORSE_SELECTED);
             }
         });
+        btnShowGuns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonPressed(AppConstants.GUN_SELECTED);
+            }
+        });
 
+
+
+        rvHorseList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
+        rvHorseList.setAdapter(new HorseListAdapter(this,horseModels));
+
+        rvGunList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
+        rvGunList.setAdapter(new GunListAdapter(this,gunModels));
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(int buttonId) {
-        if (mListener != null) {
-            mListener.onButtonClick(buttonId);
+        if (buttonClickListener != null) {
+            buttonClickListener.onButtonClick(buttonId);
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
+    /*@Override
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof ButtonClickListener) {
-            mListener = (ButtonClickListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+    }*/
+
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        buttonClickListener = null;
     }
 
-    public interface ButtonClickListener {
-        // TODO: Update argument type and name
-        void onButtonClick(int buttonId);
-    }
+
 }
