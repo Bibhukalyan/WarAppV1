@@ -1,9 +1,28 @@
 package com.example.warappv1;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
+import android.provider.ContactsContract;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.warappv1.fragment.ButtonListFragment;
@@ -12,12 +31,22 @@ import com.example.warappv1.model.GunModel;
 import com.example.warappv1.model.HorseModel;
 import com.example.warappv1.utils.AppConstants;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static com.example.warappv1.utils.AppConstants.REQUEST_IMAGE_CAPTURE;
 
 public class MainActivity extends AppCompatActivity implements ButtonListFragment.ButtonClickListener,ItemListFragment.OnItemSelectedListener{
 
     ArrayList<HorseModel> horseModels;
     ArrayList<GunModel> gunModels;
+    ImageView imageView;
+    Uri picUri;
+    private Bitmap myBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
 
         horseModels = new ArrayList<>();
         gunModels = new ArrayList<>();
+
+        imageView = findViewById(R.id.iv_image_captured);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -81,6 +112,19 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
                         .commit();
                 break;
             }
+            case AppConstants.CAPTURE_NEW_LIFE_SELECTED:{
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.CAMERA},
+                            AppConstants.MY_PERMISSIONS_REQUEST_CAMERA);
+                } else {
+                    dispatchTakePictureIntent();
+
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -110,4 +154,73 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
                 .commit();
 
     }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, AppConstants.REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstants.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageBitmap(imageBitmap);
+        }
+    }
+
+    String currentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull
+            String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case AppConstants.MY_PERMISSIONS_REQUEST_CAMERA: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    dispatchTakePictureIntent();
+                }
+                break;
+            }
+        }
+    }
+
 }

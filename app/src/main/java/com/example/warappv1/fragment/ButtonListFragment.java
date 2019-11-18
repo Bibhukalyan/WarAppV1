@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class ButtonListFragment extends BaseFragment {
 
     //private ButtonClickListener mListener;
-    private Button btnShowHorse,btnShowGuns;
+    private Button btnShowHorse,btnShowGuns,btnCapureNewLife;
     private RecyclerView rvHorseList,rvGunList;
     private ArrayList<HorseModel> horseModels;
     private ArrayList<GunModel> gunModels;
@@ -64,6 +64,7 @@ public class ButtonListFragment extends BaseFragment {
     private void initViews(View view) {
         btnShowHorse = view.findViewById(R.id.btn_show_horses);
         btnShowGuns = view.findViewById(R.id.btn_show_guns);
+        btnCapureNewLife = view.findViewById(R.id.btn_capture_image);
         rvHorseList = view.findViewById(R.id.rv_horse_list);
         rvGunList = view.findViewById(R.id.rv_gun_list);
 
@@ -82,6 +83,13 @@ public class ButtonListFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 onButtonPressed(AppConstants.GUN_SELECTED);
+            }
+        });
+
+        btnCapureNewLife.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonPressed(AppConstants.CAPTURE_NEW_LIFE_SELECTED);
             }
         });
 

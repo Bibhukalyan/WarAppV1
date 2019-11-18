@@ -10,7 +10,11 @@ public class AppConstants {
     public static final String GUN_LIST_KEY = "GUN_LIST_KEY";
     public static final String GUN_TYPE_KEY = "GUN_TYPE_KEY";
     public static final int GUN_SELECTED = 1;
+    public static final int CAPTURE_NEW_LIFE_SELECTED = 6;
     public static final int CONTACT_SELECTED = 2;
     public static final int AMMUNATION_SELECTED = 3;
 
+    public static final int REQUEST_IMAGE_CAPTURE = 7;
+    public static final int REQUEST_TAKE_PHOTO = 8;
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
 }
