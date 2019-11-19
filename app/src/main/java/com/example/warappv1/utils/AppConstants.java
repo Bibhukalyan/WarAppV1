@@ -17,4 +17,6 @@ public class AppConstants {
     public static final int REQUEST_IMAGE_CAPTURE = 7;
     public static final int REQUEST_TAKE_PHOTO = 8;
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
+    public static final int AMU_TYPE = 9;
+    public static final String AMU_LIST_KEY = "AMU_LIST_KEY";
 }

@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.warappv1.fragment.ButtonListFragment;
 import com.example.warappv1.fragment.ItemListFragment;
+import com.example.warappv1.model.AmmunationModel;
 import com.example.warappv1.model.GunModel;
 import com.example.warappv1.model.HorseModel;
 import com.example.warappv1.receiver.LifeformDetectedReceiver;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
 
     ArrayList<HorseModel> horseModels;
     ArrayList<GunModel> gunModels;
+    ArrayList<AmmunationModel> ammunationModels;
     ImageView imageView;
     LifeformDetectedReceiver receiver = new LifeformDetectedReceiver();
     Uri picUri;
@@ -69,13 +71,14 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
 
         horseModels = new ArrayList<>();
         gunModels = new ArrayList<>();
+        ammunationModels = new ArrayList<>();
         //receiver = new LifeformDetectedReceiver();
 
         imageView = findViewById(R.id.iv_image_captured);
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.frameForFragment,new ButtonListFragment(null,null))
+                .add(R.id.frameForFragment,new ButtonListFragment(null,null,null))
                 .commit();
     }
 
@@ -124,6 +127,17 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
                         .commit();
                 break;
             }
+
+            case AppConstants.AMMUNATION_SELECTED:{
+                Bundle amuBundle = new Bundle();
+                amuBundle.putInt(AppConstants.TYPE_KEY_FOR_FRAGMENT_ARG,AppConstants.AMU_TYPE);
+                amuBundle.putParcelableArrayList(AppConstants.AMU_LIST_KEY, AmmunationModel.getAmuList());
+                itemListFragment.setArguments(amuBundle);
+
+                fragmentTransaction.replace(R.id.frameForFragment,itemListFragment)
+                        .commit();
+                break;
+            }
             case AppConstants.CAPTURE_NEW_LIFE_SELECTED:{
                 if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.CAMERA)
@@ -160,9 +174,14 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
 
                 break;
             }
+            case AppConstants.AMMUNATION_SELECTED: {
+                ammunationModels.add(AmmunationModel.getAmuList().get(position));
+
+                break;
+            }
         }
 
-        fragmentTransaction.replace(R.id.frameForFragment,new ButtonListFragment(horseModels,gunModels))
+        fragmentTransaction.replace(R.id.frameForFragment,new ButtonListFragment(horseModels,gunModels,ammunationModels))
                 .commit();
 
     }
@@ -189,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
             }
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.warappv1.R;
+import com.example.warappv1.adapter.AmuListAdapter;
 import com.example.warappv1.adapter.GunListAdapter;
 import com.example.warappv1.adapter.HorseListAdapter;
+import com.example.warappv1.model.AmmunationModel;
 import com.example.warappv1.model.GunModel;
 import com.example.warappv1.model.HorseModel;
 import com.example.warappv1.utils.AppConstants;
@@ -28,6 +30,7 @@ public class ItemListFragment extends BaseFragment {
     private RecyclerView rvItemsList;
     private ArrayList<HorseModel> horseModels;
     private ArrayList<GunModel> gunModels;
+    private ArrayList<AmmunationModel> ammunationModels;
 
     public ItemListFragment() {
         // Required empty public constructor
@@ -62,6 +65,10 @@ public class ItemListFragment extends BaseFragment {
                 rvItemsList.setAdapter(new GunListAdapter(this, getArguments().<GunModel>getParcelableArrayList(AppConstants.GUN_LIST_KEY)));
                 break;
             }
+            case AppConstants.AMU_TYPE : {
+                rvItemsList.setAdapter(new AmuListAdapter(this, getArguments().<AmmunationModel>getParcelableArrayList(AppConstants.AMU_LIST_KEY)));
+                break;
+            }
         }
 
     }
@@ -72,7 +79,6 @@ public class ItemListFragment extends BaseFragment {
 
     private void initComponent() {
         rvItemsList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-
 
     }
 
