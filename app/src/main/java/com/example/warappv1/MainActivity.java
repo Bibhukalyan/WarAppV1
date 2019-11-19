@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -211,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageURI(outputFileUri);
             //Log.e("Uri",outputFileUri.getPath());
+            registerReceiver(receiver, filter);
             detectedLifeform("facehugger", 12.000, -56.000,outputFileUri);
         }
     }
@@ -246,6 +248,13 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
         intent.putExtra(LifeformDetectedReceiver.EXTRA_IMAGE_URI,imageUri);
 
         sendBroadcast(intent);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setVisibility(View.GONE);
+            }
+        },2000);
     }
 
     @Override

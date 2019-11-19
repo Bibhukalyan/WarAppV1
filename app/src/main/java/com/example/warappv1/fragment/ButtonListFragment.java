@@ -22,7 +22,6 @@ import com.example.warappv1.utils.AppConstants;
 
 import java.util.ArrayList;
 
-
 public class ButtonListFragment extends BaseFragment {
 
     //private ButtonClickListener mListener;

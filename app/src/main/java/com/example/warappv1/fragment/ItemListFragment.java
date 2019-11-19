@@ -44,7 +44,6 @@ public class ItemListFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         initView(view);
         initComponent();
     }
