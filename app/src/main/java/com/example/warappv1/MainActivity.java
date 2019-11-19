@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import com.example.warappv1.fragment.ButtonListFragment;
 import com.example.warappv1.fragment.ItemListFragment;
 import com.example.warappv1.model.GunModel;
 import com.example.warappv1.model.HorseModel;
+import com.example.warappv1.receiver.LifeformDetectedReceiver;
 import com.example.warappv1.utils.AppConstants;
 
 import java.io.File;
@@ -47,8 +49,11 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
     ArrayList<HorseModel> horseModels;
     ArrayList<GunModel> gunModels;
     ImageView imageView;
+    LifeformDetectedReceiver receiver = new LifeformDetectedReceiver();
     Uri picUri;
     private Bitmap myBitmap;
+    private IntentFilter filter =
+            new IntentFilter(LifeformDetectedReceiver.NEW_LIFEFORM);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
 
         horseModels = new ArrayList<>();
         gunModels = new ArrayList<>();
+        //receiver = new LifeformDetectedReceiver();
 
         imageView = findViewById(R.id.iv_image_captured);
 
@@ -73,13 +79,16 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
     }
 
     @Override
-    protected void onResume() {
+    protected synchronized void onResume() {
         super.onResume();
+        registerReceiver(receiver, filter);
+
     }
 
     @Override
-    protected void onPause() {
+    protected synchronized void  onPause() {
         super.onPause();
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -201,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
             //Bitmap imageBitmap = (Bitmap) outputFileUri;
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageURI(outputFileUri);
-            Log.e("Uri",outputFileUri.getPath());
+            //Log.e("Uri",outputFileUri.getPath());
+            detectedLifeform("facehugger", 12.000, -56.000,outputFileUri);
         }
     }
 
@@ -221,6 +231,21 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    private void detectedLifeform(String detectedLifeform, double currentLongitude, double currentLatitude,Uri imageUri)
+    {
+        Intent intent = new Intent(LifeformDetectedReceiver.NEW_LIFEFORM);
+        intent.putExtra(LifeformDetectedReceiver.EXTRA_LIFEFORM_NAME,
+                detectedLifeform);
+        intent.putExtra(LifeformDetectedReceiver.EXTRA_LONGITUDE,
+                currentLongitude);
+        intent.putExtra(LifeformDetectedReceiver.EXTRA_LATITUDE,
+                currentLatitude);
+
+        intent.putExtra(LifeformDetectedReceiver.EXTRA_IMAGE_URI,imageUri);
+
+        sendBroadcast(intent);
     }
 
     @Override
