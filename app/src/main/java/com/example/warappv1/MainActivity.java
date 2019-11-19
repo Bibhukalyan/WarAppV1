@@ -16,11 +16,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-
+                ex.printStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -183,10 +185,23 @@ public class MainActivity extends AppCompatActivity implements ButtonListFragmen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppConstants.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            /*Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");*/
+            Uri outputFileUri = null;
+            File getImage = getExternalCacheDir();
+            if (getImage != null) {
+                File file = new File(currentPhotoPath);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    outputFileUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", file);
+                else
+                    outputFileUri = Uri.fromFile(file);
+            }
+            //return outputFileUri;
+            //Bundle extras = data.getExtras();
+            //Bitmap imageBitmap = (Bitmap) outputFileUri;
             imageView.setVisibility(View.VISIBLE);
-            imageView.setImageBitmap(imageBitmap);
+            imageView.setImageURI(outputFileUri);
+            Log.e("Uri",outputFileUri.getPath());
         }
     }
 
