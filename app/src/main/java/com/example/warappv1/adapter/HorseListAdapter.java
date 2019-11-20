@@ -48,7 +48,8 @@ public class HorseListAdapter extends RecyclerView.Adapter<HorseListAdapter.View
                 @Override
                 public void onClick(View v) {
                     //Toast.makeText(baseFragment.getContext(), "Clciked", Toast.LENGTH_SHORT).show();
-                    ((ItemListFragment) baseFragment).onItemSelected(position, AppConstants.HORSE_SELECTED);
+                    if (baseFragment instanceof ItemListFragment)
+                        ((ItemListFragment) baseFragment).onItemSelected(position, AppConstants.HORSE_SELECTED);
 
                 }
             });

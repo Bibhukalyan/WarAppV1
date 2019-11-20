@@ -66,13 +66,13 @@ public class AmmunationModel implements Parcelable {
     public static synchronized ArrayList<AmmunationModel> getAmuList(){
         if (amuModels == null){
             amuModels = new ArrayList<>();
-            amuModels.add(new AmmunationModel(R.drawable.gun1,"Amu1"));
-            amuModels.add(new AmmunationModel(R.drawable.gun2,"Amu2"));
-            amuModels.add(new AmmunationModel(R.drawable.gun3,"Amu3"));
-            amuModels.add(new AmmunationModel(R.drawable.gun4,"Amu4"));
-            amuModels.add(new AmmunationModel(R.drawable.gun5,"Amu5"));
-            amuModels.add(new AmmunationModel(R.drawable.gun6,"Amu6"));
-            amuModels.add(new AmmunationModel(R.drawable.gun7,"Amu7"));
+            amuModels.add(new AmmunationModel(R.drawable.amu1,"Amu1"));
+            amuModels.add(new AmmunationModel(R.drawable.amu2,"Amu2"));
+            amuModels.add(new AmmunationModel(R.drawable.amu7,"Amu3"));
+            amuModels.add(new AmmunationModel(R.drawable.amu4,"Amu4"));
+            amuModels.add(new AmmunationModel(R.drawable.amu5,"Amu5"));
+            amuModels.add(new AmmunationModel(R.drawable.amu6,"Amu6"));
+            amuModels.add(new AmmunationModel(R.drawable.amu7,"Amu7"));
         }
 
         return amuModels;

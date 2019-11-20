@@ -48,7 +48,8 @@ public class GunListAdapter extends RecyclerView.Adapter<GunListAdapter.ViewHold
                     //Toast.makeText(mcontext, "Clicked", Toast.LENGTH_SHORT).show();
                     //mcontext.setResult(Activity.RESULT_OK,new Intent().putExtra(MyOtherActivity.GUN_SELECTED,gunModels.get(position)));
                     //mcontext.finish();
-                    ((ItemListFragment) fragment).onItemSelected(position, AppConstants.GUN_SELECTED);
+                    if (fragment instanceof ItemListFragment)
+                        ((ItemListFragment) fragment).onItemSelected(position, AppConstants.GUN_SELECTED);
                 }
             });
         }
